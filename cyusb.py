@@ -5,6 +5,8 @@ A port of CyUSB Serial Library in pure python.
 """
 
 import usb1
+import struct
+
 from usb1 import USBContext
 from usb1.libusb1 import *
 from enum import Enum, IntEnum
@@ -787,6 +789,11 @@ class CyUSB(object):
         ret = self.dev.controlWrite(bmRequestType, bmRequest,
                                     wValue, wIndex, wBuffer, self.timeout)
         return ret
+
+    @staticmethod
+    def checksum(buff):
+        """Return Cypress-style checksum of 512-byte config bytes"""
+        return 0xFFFFFFFF & sum(struct.unpack("<125I", buff[12:]))
 
 def main():
     with USBContext() as context:
