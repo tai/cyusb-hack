@@ -14,9 +14,9 @@ configuration.
 # Status
 
 * Management USB Protocol can now be sent with a Python script
-** However, exact meaning of some values are still unclear
+ * However, exact meaning of some values are still unclear
 * Configuration memory data format is fairly understood now
-** However, not all configuration details are fully documented yet
+ * However, not all configuration details are fully documented yet
 
 # Trying it out
 $ cyusb.py
@@ -33,5 +33,5 @@ an interface to libcyusbserial (Cypress's own SDK) API, but
 mine will have more features with above-hacked management capability.
 
 My plan is to create a simple command-line tool to reconfigure
-ypress chips from any non-Windows environment, using this
+Cypress chips from any non-Windows environment, using this
 enhancement to python-ucdev library.
