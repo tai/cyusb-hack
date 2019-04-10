@@ -1,0 +1,99 @@
+Reverse Engineering of Cypress USB-Serial Configuration Utility
+
+Configuration Memory Format (512B)
+=====================================================================
+
+000000 43 59 55 53 01 00 00 00 cb 18 0f cf 31 20 00 00
+       ^^^^^^^^^^^CYUS         ^^^^^^^^^^^sum(each 4bytes as u32 values)
+                   ^^^^^^^^^^^format version?
+
+=== Core config ===
+000010 00 20 00 00 00 18 00 00 dc 17 45 9c 02 03 00 00
+                                           ^^mode: UART(01), SPI(02), I2C(03)
+                                              ^^UART:CDC(01),PHDC(02),VEND(03)
+000020 ff ff ff 00 a0 86 01 00 08 00 00 01 01 01 00 00
+                   ^^^^^^^^UART baud, I2C freq, SPI freq (LSB-first)
+                                  ^^SPI proto: MT(00), TI(01), NS(02)
+                                        ^^SPI bitorder MSB(01), LSB(00)
+                                           ^^SPI slave(00), master(01)
+                                              ^^SPI SSN: frame(00), cont(01)
+                                                    ^^SPI-MT (00)
+                                                    ^^SPI TI (01)
+                                                    ^^SPI-NS (00)
+       ^^^^^^^^UART LED on (08 00 09) / off (FF FF FF) 
+                            ^^UART 2/4/6-pin mode (00-02)
+                               ^^UART bits(07, 08)
+                                           ^^UART parity (00-04)
+                               ^^I2C slave address (7bit)
+                                     ^^I2C master(01), slave(00)
+                                           ^^I2C c-stretch on(01), off(00)
+000030 00 00 00 00 00 00 00 00 ff ff ff 00 00 00 00 00
+
+=== CapSense config ===
+000040 00 00 00 00 00 00 00 00 00 00 00 00 00 01 01 ff
+                                           ^^CS on(01), off(00)
+                                              ^^CS debounce
+                                                 ^^CS scan
+                                                    ^^CS shield
+000050 00 ff ff ff ff 00 ff 01 ff ff 00 01 ff ff 00 01
+       ^^CS1 on(01), off(00)
+          ^^CS1 out            ^^CS1 input
+                      ^^^^^CS no-led(00 FF)
+                            ^^CS sense
+                                  ^^CS1 led
+000060 ff ff 00 01 ff ff 00 01 ff ff 00 01 ff ff 00 01
+       ^^CS? gpio
+000070 ff ff 00 01 ff ff 00 00 00 00 00 00 00 00 00 00
+000080 00 00 00 00 00 00 00 00 00 00 00 00 ff ff ff 00
+                                           ^^^^^^^^BCD on(020100), off(FFFFFF)
+
+000090 00 00 01 13 b4 04 04 00 00 01 fa 00 ff ff ff ff
+                   ^^^^^^^^^^^VID-PID in LSB
+                                  ^^I2C wakeup on(03), off(01)
+                                  ^^CS off(01)
+
+0000a0 ff ff ff ff ff ff ff ff 00 00 00 00 04 03 09 04
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^M/P/S StringDesc: yes(FF), no(00)
+
+0000b0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0000c0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0000d0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0000e0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 2c 03
+
+=== Manifacturer String Descriptor (64B) ===
+0000f0 43 00 79 00 70 00 72 00 65 00 73 00 73 00 20 00
+000100 53 00 65 00 6d 00 69 00 63 00 6f 00 6e 00 64 00
+000110 75 00 63 00 74 00 6f 00 72 00 00 00 00 00 00 00
+000120 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+=== Product String Descriptor (64B) ===
+000130 38 03 55 00 53 00 42 00 2d 00 53 00 65 00 72 00
+000140 69 00 61 00 6c 00 20 00 28 00 53 00 69 00 6e 00
+000150 67 00 6c 00 65 00 20 00 43 00 68 00 61 00 6e 00
+000160 6e 00 65 00 6c 00 29 00 00 00 00 00 00 00 00 00
+
+=== Serial String Descriptor (64B) ===
+000170 00 00 02 03 00 00 00 00 00 00 00 00 00 00 00 00
+000180 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000190 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0001a0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+=== GPIO config ===
+0001b0 00 00 00 00 24 00 00 00 02 03 00 00 00 04 00 00
+                   ^^^^^       ^^^^^       ^^^^^GPIO bits by mode?
+                   ^^^^^GPIO drive0(e7 07)
+                   ^^^^^GPIO drive1(00 00)
+                   ^^GPIO0 input(e7->e6)
+                      ^^GPIO10 tristate(07->03)
+                               ^^^^^GPIO drive1(e7 07)
+                               ^^^^^GPIO  input(00 00)
+                                           ^^^^^GPIO input(e7 07)
+                   ^^          ^^^^^       ^^^^^GPIO tristate(all 00)
+                                           ^^GPIO0 input(01)
+0001c0 00 00 00 00 00 01 0b 00 00 00 00 00 00 00 00 00
+       ^^^^^^^^^^^BCD on (11)
+
+0001d0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+*
+000200 0a
+000201
