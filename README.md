@@ -19,7 +19,22 @@ configuration.
  * However, not all configuration details are fully documented yet
 
 # Trying it out
-$ cyusb.py
+```
+$ ./cyusb.py
+cyusb.py - Reprogram Cypress USB-to-Serial chip (CY7C65211, etc)
+Usage: cyusb.py [options] (save|load|mode) args...
+Options:
+  -V, --vid vid: VID of device to connect (0x04b4)
+  -P, --pid pid: PID of device to connect (0x0004)
+  -n, --nth N  : Select Nth device (0)
+  -s, --scb N  : Select Nth SCB block (0)
+Example:
+ $ cyusb.py save save.bin
+ $ cyusb.py load save.bin
+NOTE:
+- Detail of configuration memory is still under investigation.
+- Interface is likely to change after further discovery.
+```
 
 # What have been discovered
 * For undocumented management USB protocol, see cyusb.py.
